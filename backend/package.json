@@ -6,32 +6,72 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test": "jest --config jest.config.standard.js",
+    "test:watch": "jest --config jest.config.standard.js --watch",
+    "test:coverage": "jest --config jest.config.standard.js --coverage",
+    "test:migrate": "node migrate-to-standard.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
+    "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "express-session": "^1.17.3",
     "form-data": "^4.0.4",
     "google-auth-library": "^10.3.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "nodemailer": "^6.9.7",
+    "pdf-parse": "^1.1.1",
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.6.0",
+    "speakeasy": "^2.0.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",
     "@types/jest": "^30.0.0",
     "jest": "^30.1.3",
+    "jest-junit": "^16.0.0",
     "mongodb-memory-server": "^10.2.1",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js",
+      "!src/**/index.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    },
+    "testMatch": [
+      "**/tests/**/*.test.js",
+      "**/tests/**/*.spec.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "setupFilesAfterEnv": [
+      "./tests/setup.js"
+    ],
+    "verbose": true,
+    "testTimeout": 10000
   }
 }

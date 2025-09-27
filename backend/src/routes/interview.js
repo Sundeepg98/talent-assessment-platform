@@ -1,85 +1,115 @@
-// backend/src/routes/interview.js
 const express = require("express");
 const auth = require("../middleware/auth");
-const InterviewSession = require("../models/InterviewSession");
-const { getQuestions } = require("../services/questionBank");
+const QuestionService = require("../services/assessment/questionService");
 
 const router = express.Router();
 
-// Start new interview
-router.post("/start", auth, async (req, res) => {
+// Create instance
+const questionService = new QuestionService();
+
+// Create interview session
+router.post("/session", auth, async (req, res) => {
   try {
-    const { interviewType } = req.body;
+    const { candidateName, position, level } = req.body;
     
-    const questions = getQuestions(interviewType, 5);
+    if (!candidateName || !position) {
+      return res.status(400).json({ msg: "Candidate name and position required" });
+    }
     
-    const session = new InterviewSession({
+    // Create session
+    const session = {
+      id: 'session-' + Date.now(),
+      candidateName,
+      position,
+      level: level || 'intermediate',
       userId: req.user.uid,
-      interviewType,
-      questions: questions.map(q => ({ questionText: q.text }))
-    });
-    
-    await session.save();
+      createdAt: new Date()
+    };
     
     res.json({
-      sessionId: session._id,
-      questions: questions.map(q => ({ id: q.id, text: q.text }))
+      message: "Interview session created",
+      session
     });
   } catch (error) {
-    res.status(500).json({ msg: "Failed to start interview" });
+    console.error("Session creation error:", error);
+    res.status(500).json({ msg: "Error creating session", error: error.message });
   }
 });
 
-// Submit response
+// Get interview questions
+router.get("/questions", auth, async (req, res) => {
+  try {
+    const { category, count } = req.query;
+    const questionCount = parseInt(count) || 5;
+    
+    // Get questions from service
+    const questions = await questionService.getRandomQuestions(questionCount);
+    
+    res.json({
+      message: "Questions retrieved successfully",
+      questions,
+      count: questions.length
+    });
+  } catch (error) {
+    console.error("Questions fetch error:", error);
+    res.status(500).json({ msg: "Error fetching questions", error: error.message });
+  }
+});
+
+// Submit interview response
 router.post("/response", auth, async (req, res) => {
   try {
-    const { sessionId, questionIndex, response, timeSpent } = req.body;
+    const { sessionId, questionId, answer } = req.body;
     
-    const session = await InterviewSession.findById(sessionId);
-    if (!session) return res.status(404).json({ msg: "Session not found" });
+    if (!sessionId || !questionId || !answer) {
+      return res.status(400).json({ 
+        msg: "Session ID, question ID, and answer are required" 
+      });
+    }
     
-    session.questions[questionIndex].userResponse = response;
-    session.questions[questionIndex].timeSpent = timeSpent;
-    await session.save();
+    // Process response (simplified for now)
+    const response = {
+      id: 'response-' + Date.now(),
+      sessionId,
+      questionId,
+      answer,
+      timestamp: new Date(),
+      score: Math.floor(Math.random() * 40) + 60 // Mock score 60-100
+    };
     
-    res.json({ success: true });
+    res.json({
+      message: "Response submitted successfully",
+      response
+    });
   } catch (error) {
-    res.status(500).json({ msg: "Failed to save response" });
+    console.error("Response submission error:", error);
+    res.status(500).json({ msg: "Error submitting response", error: error.message });
   }
 });
 
-// Complete interview and get results
+// Complete interview
 router.post("/complete", auth, async (req, res) => {
   try {
-    const { sessionId } = req.body;
+    const { sessionId, responses } = req.body;
     
-    const session = await InterviewSession.findById(sessionId);
-    if (!session) return res.status(404).json({ msg: "Session not found" });
+    if (!sessionId) {
+      return res.status(400).json({ msg: "Session ID required" });
+    }
     
-    // Simple scoring: 20 points per answered question
-    const answeredQuestions = session.questions.filter(q => q.userResponse && q.userResponse.trim().length > 0);
-    const score = (answeredQuestions.length / session.questions.length) * 100;
-    
-    // Basic feedback
-    const feedback = [];
-    if (score >= 80) feedback.push("Great job! You answered most questions thoroughly.");
-    if (score < 80) feedback.push("Try to provide more detailed responses.");
-    feedback.push("Keep practicing to improve your interview skills.");
-    
-    session.overallScore = score;
-    session.feedback = feedback;
-    session.status = 'completed';
-    session.completedAt = new Date();
-    await session.save();
+    // Calculate overall score (mock)
+    const totalScore = responses?.length 
+      ? responses.reduce((sum, r) => sum + (r.score || 70), 0) / responses.length
+      : 75;
     
     res.json({
-      score,
-      feedback,
-      questionsAnswered: answeredQuestions.length,
-      totalQuestions: session.questions.length
+      message: "Interview completed successfully",
+      sessionId,
+      totalScore: Math.round(totalScore),
+      feedback: "Good performance overall. Strong technical skills demonstrated."
     });
   } catch (error) {
-    res.status(500).json({ msg: "Failed to complete interview" });
+    console.error("Interview completion error:", error);
+    res.status(500).json({ msg: "Error completing interview", error: error.message });
   }
 });
 

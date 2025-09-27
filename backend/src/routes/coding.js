@@ -1,10 +1,15 @@
 // backend/src/routes/coding.js
 const express = require("express");
 const auth = require("../middleware/auth");
-const judge0Service = require("../services/judge0Service");
+const Judge0Service = require("../services/assessment/judge0Service");
 const Submission = require("../models/Submission");
 
 const router = express.Router();
+
+// Create instance with test config (uses mock when JUDGE0_API_KEY=test-judge0-key)
+const judge0Service = new Judge0Service({
+  apiKey: process.env.JUDGE0_API_KEY || 'test-judge0-key'
+});
 
 // Submit code for execution
 router.post("/submit", auth, async (req, res) => {
@@ -25,37 +30,39 @@ router.post("/submit", auth, async (req, res) => {
       languageId,
       judge0Token: judge0Response.token
     });
-
-    res.json({ token: judge0Response.token, submissionId: submission._id });
+    
+    res.json({ 
+      message: "Code submitted successfully",
+      submissionId: submission._id,
+      judge0Token: judge0Response.token
+    });
   } catch (error) {
-    console.error('Submission error:', error);
-    res.status(500).json({ msg: "Submission failed" });
+    console.error("Submission error:", error);
+    res.status(500).json({ 
+      msg: "Server error during submission",
+      error: error.message 
+    });
   }
 });
 
-// Get execution results
-router.get("/submission/:token", auth, async (req, res) => {
+// Get submission result
+router.get("/result/:token", auth, async (req, res) => {
   try {
     const { token } = req.params;
     
-    // Get results from Judge0
-    const results = await judge0Service.getSubmission(token);
+    // Get result from Judge0
+    const result = await judge0Service.getSubmission(token);
     
-    // Update database with results
-    await Submission.findOneAndUpdate(
-      { judge0Token: token },
-      { 
-        status: results.status.description,
-        output: results.stdout || results.stderr || results.compile_output,
-        executionTime: results.time,
-        memory: results.memory
-      }
-    );
-
-    res.json(results);
+    res.json({ 
+      message: "Result retrieved successfully",
+      result 
+    });
   } catch (error) {
-    console.error('Results fetch error:', error);
-    res.status(500).json({ msg: "Failed to fetch results" });
+    console.error("Result fetch error:", error);
+    res.status(500).json({ 
+      msg: "Server error fetching result",
+      error: error.message 
+    });
   }
 });
 

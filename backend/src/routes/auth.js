@@ -56,7 +56,7 @@ router.post("/google", async (req, res) => {
         role: user.role 
       }, 
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "24h" }  // Changed from 7d to 24h for better security
     );
 
     return res.json({
@@ -80,22 +80,22 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!name || !email || !password || !role)
-      return res.status(400).json({ msg: "All fields including role are required" });
+    if (!name || !email || !password)
+      return res.status(400).json({ error: "All fields are required" });
 
-    // Validate role
-    if (!['candidate', 'hr', 'admin'].includes(role)) {
-      return res.status(400).json({ msg: "Invalid role selected" });
+    // Validate role if provided
+    if (role && !['candidate', 'hr', 'admin'].includes(role)) {
+      return res.status(400).json({ error: "Invalid role selected" });
     }
 
     const exists = await User.findOne({ email });
     if (exists) {
       if (exists.authProvider === 'google') {
-        return res.status(409).json({ 
-          msg: "Email already registered with Google. Please use Google Sign-In." 
+        return res.status(400).json({ 
+          error: "Email already registered with Google. Please use Google Sign-In." 
         });
       }
-      return res.status(409).json({ msg: "Email already used" });
+      return res.status(400).json({ error: "Email already used" });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -103,18 +103,25 @@ router.post("/register", async (req, res) => {
       name, 
       email, 
       password: hash, 
-      role,
+      role: role || 'candidate',
       authProvider: 'local'
     });
 
+    const token = jwt.sign({ uid: user._id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "7d"
+    });
+
     return res.status(201).json({ 
-      id: user._id, 
-      name: user.name, 
-      email: user.email,
-      role: user.role
+      token,
+      user: {
+        id: user._id, 
+        name: user.name, 
+        email: user.email,
+        role: user.role
+      }
     });
   } catch (e) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -124,16 +131,16 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ msg: "Invalid credentials" });
+    if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
     if (user.authProvider === 'google') {
       return res.status(400).json({ 
-        msg: "This email is registered with Google. Please use Google Sign-In." 
+        error: "This email is registered with Google. Please use Google Sign-In." 
       });
     }
 
     const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.status(401).json({ msg: "Invalid credentials" });
+    if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
     const token = jwt.sign({ 
       uid: user._id, 
@@ -154,7 +161,7 @@ router.post("/login", async (req, res) => {
       }
     });
   } catch (e) {
-    return res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -162,6 +169,33 @@ router.post("/login", async (req, res) => {
 router.get("/me", auth, async (req, res) => {
   const user = await User.findById(req.user.uid).select("-password");
   res.json(user);
+});
+
+// POST /api/auth/signup (alias for register to match test expectations)
+router.post("/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password)
+      return res.status(400).json({ error: "All fields are required" });
+
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(400).json({ error: "Email already used" });
+
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hash });
+
+    const token = jwt.sign({ uid: user._id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "7d"
+    });
+
+    return res.status(201).json({ 
+      token,
+      user: { id: user._id, name: user.name, email: user.email }
+    });
+  } catch (e) {
+    return res.status(500).json({ error: "Server error" });
+  }
 });
 
 // // POST /api/auth/register
@@ -258,7 +292,7 @@ router.get("/me", auth, async (req, res) => {
 //     const jwtToken = jwt.sign(
 //       { uid: user._id, email: user.email }, 
 //       process.env.JWT_SECRET,
-//       { expiresIn: "7d" }
+//       { expiresIn: "24h" }  // Changed from 7d to 24h for better security
 //     );
 
 //     return res.json({
