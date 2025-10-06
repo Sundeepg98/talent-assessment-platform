@@ -44,7 +44,8 @@ class CompleteDIContainer {
         .singleton()
         .inject(() => ({
           apiKey: process.env.JUDGE0_API_KEY || 'test-judge0-key',
-          baseUrl: process.env.JUDGE0_BASE_URL || 'https://judge0-ce.p.rapidapi.com'
+          baseUrl: process.env.JUDGE0_BASE_URL || 'https://judge0-ce.p.rapidapi.com',
+          apiHost: 'judge0-ce.p.rapidapi.com'
         })),
 
       // Gemini AI Service
@@ -67,8 +68,17 @@ class CompleteDIContainer {
         .singleton()
         .inject(() => ({
           jwt: require('jsonwebtoken'),
-          jwtSecret: process.env.JWT_SECRET || 'your-secret-key',
-          expiresIn: '7d'
+          crypto: require('crypto'),
+          accessTokenSecret: process.env.JWT_SECRET || 'your-secret-key',
+          refreshTokenSecret: process.env.JWT_SECRET || 'your-secret-key',
+          accessTokenExpiry: '15m',
+          refreshTokenExpiry: '7d',
+          verificationTokenExpiry: '24h',
+          algorithm: 'HS256',
+          issuer: 'talent-assessment-platform',
+          audience: 'talent-assessment-users',
+          blacklistStore: new Set(),
+          metadataStore: new Map()
         })),
 
       // Email Service
@@ -89,7 +99,15 @@ class CompleteDIContainer {
 
       // Session Manager
       sessionManager: awilix.asClass(require('../../infrastructure/session/sessionManager'))
-        .singleton(),
+        .singleton()
+        .inject(() => ({
+          sessionSecret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
+          mongoUri: process.env.MONGO_URI || process.env.MONGODB_URI,
+          nodeEnv: process.env.NODE_ENV || 'development',
+          cookieMaxAge: 1000 * 60 * 60 * 24, // 24 hours
+          sessionTtl: 24 * 60 * 60, // TTL in seconds
+          maxInactivity: 1000 * 60 * 60 * 24 // 24 hours in ms
+        })),
 
       // PDF Processor
       pdfProcessor: awilix.asClass(require('../../services/processing/pdfProcessor'))
