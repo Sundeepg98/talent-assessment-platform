@@ -211,5 +211,5 @@ class InterviewAnalyzerService {
   }
 }
 
-// Export singleton instance
-module.exports = new InterviewAnalyzerService();
+// Export class for DI container (not singleton instance)
+module.exports = InterviewAnalyzerService;

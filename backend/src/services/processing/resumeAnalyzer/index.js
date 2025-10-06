@@ -1,12 +1,8 @@
-const CacheService = require('../cacheService');
-const PDFProcessor = require('../pdfProcessor');
-const GeminiService = require('../../ai-services/llm/geminiService');
-
 class ResumeAnalyzerService {
-    constructor(config = {}) {
-        this.cacheService = config.cacheService || new CacheService();
-        this.pdfProcessor = config.pdfProcessor || new PDFProcessor();
-        this.aiService = config.aiService || new GeminiService(config);
+    constructor({ cacheService, pdfProcessor, geminiService }) {
+        this.cacheService = cacheService;
+        this.pdfProcessor = pdfProcessor;
+        this.aiService = geminiService;
     }
 
     async analyzeResume(resumePath, jobDescription) {

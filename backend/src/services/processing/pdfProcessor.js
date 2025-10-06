@@ -2,10 +2,9 @@ const fs = require('fs').promises;
 const path = require('path');
 
 class PDFProcessor {
-    constructor(config = {}) {
-        this.config = config;
+    constructor({ pdfLibrary = null } = {}) {
         // In a real implementation, we'd inject a PDF library like pdf-parse
-        this.pdfLib = config.pdfLibrary;
+        this.pdfLib = pdfLibrary;
     }
 
     async processFile(filePath) {
