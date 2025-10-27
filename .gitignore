@@ -98,6 +98,7 @@ secrets/
 *.wip.md
 
 # Development reports (generated during development)
+# EXCEPTION: docs/archive/ contains valuable implementation history
 *_REPORT.md
 *_AUDIT.md
 *_TEST_RESULTS.md
@@ -108,6 +109,9 @@ secrets/
 *_FIXED.md
 *_ISSUE.md
 *_PLAN.md
+
+# Keep archive documentation
+!docs/archive/*.md
 
 # Test outputs
 test-results/
