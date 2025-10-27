@@ -5,7 +5,7 @@ const path = require('path');
 class InterviewAnalyzerService {
   constructor() {
     this.pythonPath = 'python3';
-    this.scriptPath = path.join(__dirname, 'analyzer.py');
+    this.scriptPath = path.join(__dirname, 'analyze_ml.py'); // ✅ NOW USES REAL ML!
   }
 
   /**

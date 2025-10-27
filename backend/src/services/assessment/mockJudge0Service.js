@@ -37,6 +37,27 @@ class MockJudge0Service {
     return languages[languageId] || 'unknown';
   }
 
+  // Get all supported languages (mock implementation)
+  async getSupportedLanguages() {
+    console.log('Mock Judge0: Returning supported languages');
+    return [
+      { id: 63, name: 'JavaScript (Node.js 12.14.0)' },
+      { id: 71, name: 'Python (3.8.1)' },
+      { id: 50, name: 'C (GCC 9.2.0)' },
+      { id: 54, name: 'C++ (GCC 9.2.0)' },
+      { id: 62, name: 'Java (OpenJDK 13.0.1)' },
+      { id: 78, name: 'Kotlin (1.3.70)' },
+      { id: 79, name: 'Scala (2.13.2)' },
+      { id: 80, name: 'Swift (5.2.3)' },
+      { id: 74, name: 'TypeScript (3.7.4)' },
+      { id: 72, name: 'Ruby (2.7.0)' },
+      { id: 68, name: 'PHP (7.4.1)' },
+      { id: 73, name: 'Rust (1.40.0)' },
+      { id: 60, name: 'Go (1.13.5)' },
+      { id: 51, name: 'C# (Mono 6.6.0.161)' }
+    ];
+  }
+
   // Simulate code execution
   simulateExecution(sourceCode, languageId, stdin = '') {
     const language = this.getLanguageName(languageId);

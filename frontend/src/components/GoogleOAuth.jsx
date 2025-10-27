@@ -1,18 +1,18 @@
 // frontend/src/components/GoogleOAuth.jsx - CORRECTED
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth"; // Correctly import the useAuth hook
+import { useAuth } from "../hooks/useAuth";
+import { API } from "../config/api";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_BASE = "http://localhost:5000/api";
 
 export default function GoogleOAuth() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Access the login function from the auth context
+  const { login } = useAuth();
 
   const handleGoogleLogin = async (response) => {
     try {
-      const res = await fetch(`${API_BASE}/auth/google`, {
+      const res = await fetch(`${API.AUTH}/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: response.credential }),

@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import GoogleOAuth from "../components/GoogleOAuth";
-
-const API_BASE = "http://localhost:5000/api";
+import { API } from "../config/api";
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -18,7 +17,7 @@ export default function Login() {
   function getRoleBasedDashboard(role) {
     const dashboards = {
       'candidate': '/candidate-dashboard',
-      'hr': '/hr-dashboard', 
+      'hr': '/hr-dashboard',
       'admin': '/admin-dashboard'
     };
     return dashboards[role] || '/candidate-dashboard';
@@ -32,7 +31,7 @@ export default function Login() {
       return;
     }
     try {
-      const res = await fetch(`${API_BASE}/auth/login`, {
+      const res = await fetch(`${API.AUTH}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

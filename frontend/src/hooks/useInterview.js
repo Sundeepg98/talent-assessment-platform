@@ -1,7 +1,6 @@
 // frontend/src/hooks/useInterview.js
 import { useState } from 'react';
-
-const API_BASE = "http://localhost:5000/api";
+import { API, getJsonHeaders } from '../config/api';
 
 export function useInterview() {
   const [sessionId, setSessionId] = useState(null);
@@ -14,13 +13,9 @@ export function useInterview() {
   const startInterview = async (interviewType) => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/interview/start`, {
+      const response = await fetch(`${API.INTERVIEW}/start`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: getJsonHeaders(),
         body: JSON.stringify({ interviewType })
       });
       
@@ -38,13 +33,9 @@ export function useInterview() {
 
   const submitResponse = async (response, timeSpent) => {
     try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_BASE}/interview/response`, {
+      await fetch(`${API.INTERVIEW}/response`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: getJsonHeaders(),
         body: JSON.stringify({
           sessionId,
           questionIndex: currentQuestionIndex,
@@ -71,13 +62,9 @@ export function useInterview() {
   const completeInterview = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/interview/complete`, {
+      const response = await fetch(`${API.INTERVIEW}/complete`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: getJsonHeaders(),
         body: JSON.stringify({ sessionId })
       });
       

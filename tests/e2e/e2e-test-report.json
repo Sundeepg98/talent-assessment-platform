@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-10-06T09:30:08.575Z",
+  "summary": {
+    "total": 24,
+    "passed": 21,
+    "failed": 2,
+    "skipped": 1,
+    "passRate": "91.3%"
+  },
+  "results": {
+    "passed": [
+      "Health endpoint accessible",
+      "Database connected",
+      "User registration",
+      "JWT token received",
+      "Duplicate email prevention",
+      "User login",
+      "Protected route access",
+      "Unauthorized access prevention",
+      "Resume upload",
+      "Resume optimization",
+      "Code submission",
+      "Code execution result retrieval",
+      "Code execution status",
+      "Interview session creation",
+      "Interview questions generation",
+      "Interview response submission",
+      "Interview completion",
+      "Interview analysis",
+      "Auth + Coding integration",
+      "404 error handling",
+      "Validation error handling"
+    ],
+    "failed": [
+      {
+        "name": "Invalid password rejection",
+        "error": "Request failed with status code 500"
+      },
+      {
+        "name": "User data retrieval",
+        "error": null
+      }
+    ],
+    "skipped": [
+      "Frontend server accessible"
+    ]
+  }
+}

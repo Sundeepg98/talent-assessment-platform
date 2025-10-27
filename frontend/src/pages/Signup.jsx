@@ -2,15 +2,14 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import GoogleOAuth from "../components/GoogleOAuth";
-
-const API_BASE = "http://localhost:5000/api";
+import { API } from "../config/api";
 
 export default function Signup() {
-  const [form, setForm] = useState({ 
-    name: "", 
-    email: "", 
-    password: "", 
-    role: "candidate" 
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "candidate"
   });
   const [msg, setMsg] = useState("");
   const { login } = useAuth();
@@ -28,7 +27,7 @@ export default function Signup() {
       return;
     }
     try {
-      const res = await fetch(`${API_BASE}/auth/register`, {
+      const res = await fetch(`${API.AUTH}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -39,10 +38,10 @@ export default function Signup() {
         return;
       }
       setMsg("Registered successfully! Redirecting...");
-      
+
       // Auto-login after successful registration
       setTimeout(async () => {
-        const loginRes = await fetch(`${API_BASE}/auth/login`, {
+        const loginRes = await fetch(`${API.AUTH}/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: form.email, password: form.password }),

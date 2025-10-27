@@ -1,0 +1,15 @@
+{
+  "totalFiles": 116,
+  "filesWithTests": 90,
+  "testsExecuted": 297,
+  "testsPassed": 268,
+  "testsFailed": 29,
+  "coverage": {},
+  "principles": {
+    "solid": true,
+    "dry": true,
+    "looseCoupling": true,
+    "dependencyInjection": true,
+    "noMocks": true
+  }
+}

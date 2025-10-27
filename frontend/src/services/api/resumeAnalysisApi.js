@@ -1,6 +1,6 @@
 // frontend/src/services/api/resumeAnalysisApi.js
 
-const API_BASE = "http://localhost:5000/api";
+import { API, getAuthHeaders } from '../../config/api';
 
 export const resumeAnalysisService = {
   // File validation
@@ -34,48 +34,46 @@ export const resumeAnalysisService = {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   },
 
-  // Test file upload
+  // Test file upload (maps to backend /upload endpoint)
   async testUpload(resumeFile, jdFile) {
-    const token = localStorage.getItem('token');
     const formData = new FormData();
-    
-    formData.append('resume', resumeFile);
-    formData.append('jobDescription', jdFile);
 
-    const response = await fetch(`${API_BASE}/resume/test-upload`, {
+    formData.append('resume', resumeFile);
+    if (jdFile) {
+      formData.append('jobDescription', jdFile);
+    }
+
+    const response = await fetch(`${API.RESUME}/upload`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
       body: formData
     });
 
     const data = await response.json();
-    
+
     return {
       success: response.ok,
       ...data
     };
   },
 
-  // Analyze resume
+  // Analyze resume (maps to backend /optimize endpoint)
   async analyzeResume(resumeFile, jdFile) {
-    const token = localStorage.getItem('token');
     const formData = new FormData();
-    
-    formData.append('resume', resumeFile);
-    formData.append('jobDescription', jdFile);
 
-    const response = await fetch(`${API_BASE}/resume/analyze`, {
+    formData.append('resume', resumeFile);
+    if (jdFile) {
+      formData.append('jobDescription', jdFile);
+    }
+
+    const response = await fetch(`${API.RESUME}/optimize`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
+      headers: getAuthHeaders(),
       body: formData
     });
 
     const data = await response.json();
-    
+
     return {
       success: response.ok,
       ...data

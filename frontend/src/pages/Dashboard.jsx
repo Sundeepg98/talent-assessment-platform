@@ -1,12 +1,11 @@
 // frontend/src/pages/Dashboard.jsx - UPDATED
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth"; // Assuming you have a useAuth hook
-
-const API_BASE = "http://localhost:5000/api";
+import { useAuth } from "../hooks/useAuth";
+import { API, getAuthHeaders } from "../config/api";
 
 export default function Dashboard() {
-  const { user, logout, isAuthenticated } = useAuth(); // Use the hook to get user, logout function
+  const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
 
@@ -18,9 +17,8 @@ export default function Dashboard() {
 
     // fetch user profile is no longer needed here if user object contains all info
     // However, if we need fresh data from server, we can still fetch.
-    const token = localStorage.getItem("token");
-    fetch(`${API_BASE}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+    fetch(`${API.AUTH}/me`, {
+      headers: getAuthHeaders(),
     })
       .then(async (res) => {
         if (!res.ok) {

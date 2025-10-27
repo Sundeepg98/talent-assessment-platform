@@ -1,13 +1,49 @@
-# Dependencies
+# Node modules
 node_modules/
-**/node_modules/
-package-lock.json
+*/node_modules/
 
-# Environment variables
+# Build outputs
+dist/
+build/
+out/
+*.out
+
+# Environment files
 .env
-.env.local
-.env.*.local
-**/.env
+.env.*
+!.env.example
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+*~
+.history/
+
+# Tool-specific folders
+.serena/
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+logs/
+
+# Testing
+coverage/
+.nyc_output
+*.lcov
+.cache/
 
 # Python
 __pycache__/
@@ -17,41 +53,88 @@ __pycache__/
 .Python
 env/
 venv/
-ENV/
 .venv
-*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
 .pytest_cache/
-.coverage
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-
-# Build outputs
-dist/
-build/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Testing
-coverage/
-*.lcov
-.nyc_output
+*.egg-info/
+.eggs/
 
 # Temporary files
 *.tmp
 *.temp
-/tmp/
+tmp/
+temp/
+
+# Package files
+*.zip
+*.tar.gz
+*.rar
+
+# Security sensitive
+*.key
+*.pem
+*.p12
+*.crt
+*.pfx
+secrets/
 
 # Database
-*.db
 *.sqlite
+*.sqlite3
+*.db
 
-# Uploads
-uploads/
-**/uploads/
+# ============================================
+# DOCUMENTATION RULES
+# ============================================
+
+# Temporary documentation folder
+.temp-docs/
+
+# Temporary document patterns
+*.tmp.md
+*.temp.md
+*.draft.md
+*.wip.md
+
+# Development reports (generated during development)
+*_REPORT.md
+*_AUDIT.md
+*_TEST_RESULTS.md
+*_INVESTIGATION.md
+*_ANALYSIS.md
+*_REVIEW.md
+*_VALIDATION.md
+*_FIXED.md
+*_ISSUE.md
+*_PLAN.md
+
+# Test outputs
+test-results/
+test-reports/
+e2e-reports/
+
+# Exclude all markdown files by default in certain folders
+/iterations/*.md
+/drafts/*.md
+/notes/*.md
+
+# ============================================
+# WHITELIST: Keep these documentation files
+# ============================================
+!README.md
+!frontend/README.md
+!backend/README.md
+!tests/README.md
+!docs/README.md
+!docs/architecture/*.md
+!docs/api/*.md
+!docs/deployment/*.md
+!CONTRIBUTING.md
+!LICENSE.md
+!CHANGELOG.md
+
+# Misc
+.cache
+.parcel-cache
+.turbo

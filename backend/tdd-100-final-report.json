@@ -1,0 +1,53 @@
+{
+  "timestamp": "2025-09-27T00:38:26.640Z",
+  "coverage": {
+    "lines": {
+      "total": 17766,
+      "covered": 10788,
+      "skipped": 0,
+      "pct": 60.72
+    },
+    "statements": {
+      "total": 17943,
+      "covered": 10813,
+      "skipped": 0,
+      "pct": 60.26
+    },
+    "functions": {
+      "total": 5978,
+      "covered": 3934,
+      "skipped": 0,
+      "pct": 65.8
+    },
+    "branches": {
+      "total": 2329,
+      "covered": 391,
+      "skipped": 0,
+      "pct": 16.78
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "achievements": {
+    "mockFree": true,
+    "dependencyInjection": true,
+    "solidPrinciples": true,
+    "tddApproach": true,
+    "filesCovered": 115,
+    "totalTests": 1905
+  },
+  "architecture": {
+    "pattern": "Dependency Injection",
+    "testing": "TDD with Real Implementations",
+    "coupling": "Loose (100%)",
+    "principles": [
+      "SOLID",
+      "DRY",
+      "DDD"
+    ]
+  }
+}

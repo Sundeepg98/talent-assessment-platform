@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+// DDD: Use infrastructure UserModel instead of legacy model
+const { UserModel } = require("../infrastructure/persistence/mongodb/models");
 
 async function auth(req, res, next) {
   const authHeader = req.headers.authorization || "";
@@ -10,11 +11,11 @@ async function auth(req, res, next) {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(payload.uid);
+    const user = await UserModel.findById(payload.uid);
     if (!user) {
       return res.status(401).json({ msg: "User not found" });
     }
-    
+
     req.user = { uid: user._id, email: user.email, role: user.role }; // Attach uid, email, and role
     next();
   } catch {

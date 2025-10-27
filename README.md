@@ -2,6 +2,39 @@
 
 An AI-powered recruitment platform that revolutionizes the hiring process through intelligent resume analysis, automated interview evaluation, and live coding assessments.
 
+## ⚠️ MANDATORY DEVELOPMENT STANDARDS
+
+**ALL code changes MUST follow these NON-NEGOTIABLE principles:**
+
+### 📋 Required Architecture
+- **[Domain-Driven Design (DDD)](./DEVELOPMENT_STANDARDS.md#1-domain-driven-design-ddd)** - Bounded contexts, entities, value objects
+- **[SOLID Principles](./DEVELOPMENT_STANDARDS.md#2-solid-principles)** - SRP, OCP, LSP, ISP, DIP
+- **[DRY (Don't Repeat Yourself)](./DEVELOPMENT_STANDARDS.md#3-dry-dont-repeat-yourself)** - Zero duplication tolerance
+- **[Test-Driven Development (TDD)](./DEVELOPMENT_STANDARDS.md#4-test-driven-development-tdd)** - Tests FIRST, code second
+
+### 🚫 Before ANY Code Change:
+1. **READ:** [DEVELOPMENT_STANDARDS.md](./DEVELOPMENT_STANDARDS.md) - Complete standards guide
+2. **WRITE TESTS FIRST** - No exceptions
+3. **FOLLOW DDD STRUCTURE** - Domain → Application → Infrastructure → Presentation
+4. **APPLY SOLID** - Every class, every method
+5. **CHECK DRY** - Reuse existing patterns
+
+### ✅ Quick Compliance Check:
+```bash
+# Run standards check
+./scripts/check-standards.sh
+
+# Run tests
+npm test
+
+# Check coverage (minimum 80%)
+npm run test:coverage
+```
+
+**⚠️ WARNING: Code not following these standards will be REJECTED**
+
+---
+
 ## 🚀 Features
 
 ### Core Capabilities

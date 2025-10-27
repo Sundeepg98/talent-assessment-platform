@@ -17,6 +17,17 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
+// Alias for E2E tests compatibility
+router.post('/signup', async (req, res, next) => {
+  try {
+    const registerUserUseCase = req.getService('registerUserUseCase');
+    const result = await registerUserUseCase.execute(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/login', async (req, res, next) => {
   try {
     const loginUseCase = req.getService('loginUseCase');
